@@ -1,0 +1,240 @@
+{
+  "login": {
+    "title": "Content de vous revoir",
+    "description": "Entrez vos identifiants pour accéder à votre compte.",
+    "emailLabel": "E-mail",
+    "emailPlaceholder": "manager@example.com",
+    "passwordLabel": "Mot de passe",
+    "passwordPlaceholder": "••••••••",
+    "submitButton": "Se connecter",
+    "submittingButton": "Connexion...",
+    "hintTitle": "Astuce démo :",
+    "hintText": "Utilisez un e-mail et un mot de passe de l'onglet 'Users' de votre Google Sheet.",
+    "error": "E-mail ou mot de passe invalide.",
+    "successToast": "Bienvenue, {{name}} !",
+    "validation": {
+      "email": "Veuillez entrer une adresse e-mail valide.",
+      "password": "Le mot de passe est requis."
+    }
+  },
+  "sidebar": {
+    "scanner": "Scanner",
+    "cakeStatus": "Statut des Gâteaux",
+    "liveOps": "Opérations en Direct",
+    "documentation": "Documentation",
+    "inventoryLog": "Journal d'Inventaire",
+    "summary": "Résumé",
+    "settings": "Paramètres",
+    "logout": "Déconnexion"
+  },
+  "scanner": {
+    "title": "Scanner QR StockLens",
+    "cameraOff": "Caméra éteinte",
+    "status": {
+      "scanning": "Alignez le code QR dans le cadre...",
+      "success": "Succès ! Scanné : {{lastScan}}",
+      "permissionDenied": "Accès à la caméra refusé.",
+      "error": "Une erreur est survenue. Veuillez r������essayer.",
+      "idle": "Sélectionnez un événement, puis appuyez sur Démarrer."
+    },
+    "scanEvent": "Événement de Scan",
+    "selectEvent": "Sélectionnez un événement...",
+    "b2bClient": "Client B2B",
+    "selectClient": "Sélectionnez un client...",
+    "stop": "Arrêter",
+    "start": "Démarrer le Scan",
+    "toast": {
+      "success": "Enregistré : {{serialNumber}}",
+      "error": "Échec de l'enregistrement : {{error}}",
+      "genericError": "Une erreur est survenue lors de l'enregistrement.",
+      "eventChange": "Scanner arrêté pour changer d'événement."
+    },
+    "events": {
+      "PRODUCTION_SCAN": "Scan de Production",
+      "WAREHOUSE_ENTRY": "Entrée Entrepôt",
+      "WAREHOUSE_EXIT": "Sortie Entrepôt",
+      "BOUTIQUE_STOCK_SCAN": "Scan Stock Boutique",
+      "MARCHE_STOCK_SCAN": "Scan Stock Marché",
+      "SALEYA_STOCK_SCAN": "Scan Stock Saleya",
+      "SALE_B2C": "Vente (B2C)",
+      "DELIVERY_B2B": "Livraison (B2B)"
+    }
+  },
+  "inventoryLog": {
+    "title": "Journal d'Inventaire",
+    "description": "Une liste chronologique d��taillée de tous les articles scannés.",
+    "cardTitle": "Historique des Scans",
+    "cardDescription": "Total des Scans : {{count}}",
+    "refresh": "Actualiser",
+    "clearLog": "Vider le Journal",
+    "dialog": {
+      "title": "Êtes-vous absolument sûr ?",
+      "description": "Cette action est irréversible. Elle supprimera définitivement toutes les données de scan d'inventaire et les statuts des gâteaux de votre Google Sheet.",
+      "cancel": "Annuler",
+      "confirm": "Oui, vider le journal"
+    },
+    "empty": {
+      "title": "Aucun Scan pour le Moment",
+      "description": "Commencez à scanner des articles sur la page Scanner pour les voir ici."
+    },
+    "table": {
+      "productName": "Nom du Produit",
+      "serialNumber": "Numéro de Série",
+      "scanEvent": "Événement de Scan",
+      "location": "Emplacement",
+      "b2bClient": "Client B2B",
+      "timestamp": "Horodatage"
+    },
+    "unknownProduct": "Produit Inconnu"
+  },
+  "summary": {
+    "title": "Résumé de l'Inventaire",
+    "description": "Un aperçu global et agrégé de votre inventaire actuel.",
+    "kpi": {
+      "totalItems": "Total d'Articles Scannés",
+      "uniqueProducts": "Produits Uniques"
+    },
+    "cardTitle": "Totaux par Produit",
+    "refresh": "Actualiser",
+    "empty": {
+      "title": "Aucune Donnée de Résumé",
+      "description": "Scannez quelques articles pour voir un résumé de l'inventaire ici."
+    },
+    "itemsScanned": "articles scannés"
+  },
+  "settings": {
+    "title": "Paramètres",
+    "description": "Gérez votre liste de produits maîtresse.",
+    "accessDenied": {
+      "title": "Accès Refusé",
+      "description": "Vous n'avez pas la permission de voir cette page. Veuillez contacter un administrateur."
+    },
+    "form": {
+      "addTitle": "Ajouter un Nouveau Produit",
+      "editTitle": "Modifier le Produit",
+      "description": "Définissez les détails du produit ici. Si un ID de produit existe déjà, il sera mis à jour.",
+      "editingDescription": "Modification du produit : {{name}}",
+      "labels": {
+        "id": "ID Produit*",
+        "name": "Nom du Produit*",
+        "category": "Cat��gorie",
+        "unitOfMeasure": "Unité de Mesure",
+        "unitCost": "Coût Unitaire",
+        "supplierName": "Nom du Fournisseur",
+        "reorderLevel": "Niveau de Réapprovisionnement",
+        "reorderQuantity": "Quantité de Réapprovisionnement",
+        "storageLocation": "Lieu de Stockage",
+        "shelfLifeDays": "Durée de Conservation (Jours)",
+        "isPerishable": "Est Périssable ?"
+      },
+      "save": "Enregistrer le Produit",
+      "cancel": "Annuler la Modification"
+    },
+    "list": {
+      "title": "Liste de Produits Maîtresse",
+      "empty": {
+        "title": "Aucun Produit Défini",
+        "description": "Ajoutez des produits en utilisant le formulaire ci-dessus pour commencer."
+      },
+      "table": {
+        "id": "ID",
+        "name": "Nom",
+        "category": "Catégorie",
+        "supplier": "Fournisseur",
+        "actions": "Actions"
+      },
+      "dialog": {
+        "title": "Supprimer \"{{name}}\" ?",
+        "description": "Cette action est irréversible. Elle supprimera définitivement le produit.",
+        "cancel": "Annuler",
+        "confirm": "Oui, supprimer"
+      }
+    }
+  },
+  "cakeStatus": {
+    "title": "Tableau de Bord Statut des Gâteaux",
+    "description": "Une vue en temps réel du cycle de vie de chaque gâteau.",
+    "cardTitle": "Statut en Direct",
+    "cardDescription": "Total de Gâteaux Suivis : {{count}}",
+    "searchPlaceholder": "Rechercher par numéro de série...",
+    "refresh": "Actualiser",
+    "empty": {
+      "title": "Aucune Donnée de Gâteau",
+      "description": "Scannez un gâteau pour voir son statut ici."
+    },
+    "table": {
+      "serialNumber": "Numéro de Série",
+      "status": "Statut",
+      "location": "Emplacement Actuel",
+      "lastUpdate": "Dernière Mise à Jour"
+    }
+  },
+  "liveOps": {
+    "title": "Tableau de Bord des Opérations en Direct",
+    "description": "Un aperçu de haut niveau et en temps réel de toute l'opération.",
+    "refresh": "Actualiser",
+    "productionTitle": "Résumé de la Production",
+    "inventoryTitle": "Inventaire en Direct",
+    "salesTitle": "Résumé des Ventes",
+    "kpi": {
+      "producedToday": "Gâteaux Produits Aujourd'hui",
+      "totalProduced": "Total de Gâteaux Produits",
+      "inWarehouse": "En Entrepôt de Production",
+      "inTransit": "En Transit vers les Boutiques",
+      "atBoutique": "Stock à la Boutique",
+      "atMarche": "Stock au Marché",
+      "atSaleya": "Stock à Saleya",
+      "soldB2C": "Gâteaux Vendus Aujourd'hui (B2C)",
+      "deliveredB2B": "Gâteaux Livrés Aujourd'hui (B2B)",
+      "totalSold": "Total de Gâteaux Vendus/Livrés"
+    }
+  },
+  "documentation": {
+    "title": "Documentation Utilisateur",
+    "description": "Votre guide pour utiliser et maximiser l'application StockLens.",
+    "guide": {
+      "title": "Guide d'Utilisation",
+      "description": "Instructions étape par étape pour toutes les fonctionnalités.",
+      "loginTitle": "1. Connexion",
+      "loginText": "Entrez l'e-mail et le mot de passe qui vous ont été fournis (définis dans la feuille 'Users'). Votre rôle ('Warehouse Manager' ou 'Scanner') déterminera votre niveau d'accès.",
+      "scanTitle": "2. Scanner les Codes QR",
+      "scanStep1": "Allez à la page <strong>Scanner</strong>.",
+      "scanStep2": "Sélectionnez l'<strong>Événement de Scan</strong> approprié dans le menu déroulant. C'est crucial pour un suivi précis.",
+      "scanStep2_5": "Changer l'<strong>Événement de Scan</strong> pendant que la caméra est active arrêtera automatiquement le scanner. Vous pouvez ensuite cliquer à nouveau sur <strong>Démarrer le Scan</strong> avec le nouvel événement sélectionné.",
+      "scanStep3": "Si l'événement est 'Livraison (B2B)', un second menu déroulant apparaîtra. Sélectionnez le bon client B2B.",
+      "scanStep4": "Cliquez sur <strong>Démarrer le Scan</strong>. La caméra de votre appareil s'activera.",
+      "scanStep5": "Alignez le code QR dans le cadre de la vidéo. Un bip, une vibration et un flash vert confirmeront un scan réussi.",
+      "scanStep5_5": "Pour arrêter manuellement le scanner à tout moment lorsqu'il est actif, cliquez sur le bouton rouge <strong>Arrêter</strong>.",
+      "scanStep6": "Le scanner sera automatiquement prêt pour le prochain scan après un temps de recharge de 2 secondes.",
+      "viewTitle": "3. Consulter les Tableaux de Bord & Journaux",
+      "viewText": "Utilisez la barre latérale pour naviguer entre les différentes vues :",
+      "viewStep1": "<strong>Statut des Gâteaux :</strong> Une liste en temps réel de chaque gâteau individuel, son statut actuel, son emplacement et sa dernière mise à jour. Vous pouvez rechercher par numéro de série.",
+      "viewStep2": "<strong>Opérations en Direct :</strong> Un tableau de bord de haut niveau résumant la production, les niveaux de stock par emplacement et les données de vente.",
+      "viewStep3": "<strong>Journal d'Inventaire :</strong> Un enregistrement chronologique détaillé de chaque scan effectué dans le système.",
+      "viewStep4": "<strong>Résumé :</strong> Un décompte agrégé de chaque produit unique basé sur tous les scans.",
+      "manageTitle": "4. Gérer les Produits (Managers d'Entrepôt Uniquement)",
+      "manageStep1": "Allez à la page <strong>Paramètres</strong>.",
+      "manageStep2": "Utilisez le formulaire en haut pour ajouter un nouveau produit ou en modifier un existant. Pour modifier, cliquez sur l'icône crayon dans la liste des produits.",
+      "manageStep3": "L'<strong>ID Produit</strong> doit ��tre unique et est utilisé pour lier les numéros de série aux noms de produits (par ex., si l'ID Produit est 'GATEAU-CHOC', les numéros de série devraient être 'GATEAU-CHOC-001', 'GATEAU-CHOC-002', etc.).",
+      "manageStep4": "Cliquez sur l'icône poubelle pour supprimer un produit."
+    },
+    "faq": {
+      "title": "Foire Aux Questions (FAQ)",
+      "q1": "Pourquoi le scanner ne démarre-t-il pas ?",
+      "a1": "Assurez-vous d'abord d'avoir sélectionné un 'Événement de Scan'. Le bouton 'Démarrer le Scan' sera désactivé tant que vous ne l'aurez pas fait. Si vous avez sélectionné une livraison B2B, vous devez également sélectionner un client. Si cela ne fonctionne toujours pas, vous devrez peut-être accorder les autorisations de caméra à votre navigateur pour ce site.",
+      "q2": "Comment le 'Tableau de Bord des Opérations en Direct' est-il mis à jour ?",
+      "a2": "La plupart des métriques sont calculées par des formules directement dans la Google Sheet. Cependant, les décomptes de stock par emplacement (par ex., 'En Entrepôt de Production', 'Stock à la Boutique') sont mis à jour dynamiquement par le script backend. Lorsque vous effectuez un 'SCAN_DE_PRODUCTION', le décompte de l'entrepôt augmente. Lorsque vous effectuez un scan de stock de boutique (par ex., 'SCAN_STOCK_BOUTIQUE'), le décompte de l'entrepôt diminue et celui de la boutique augmente.",
+      "q3": "Pourquoi un produit s'affiche-t-il comme 'Produit Inconnu' dans le journal ?",
+      "a3": "Cela se produit lorsque la partie ID Produit du numéro de série scanné ne correspond à aucun 'ID Produit' dans votre 'Liste de Produits Maîtresse' (dans les Paramètres). Par exemple, si vous scannez 'GATEAU-VAN-001', mais que vous n'avez que 'GATEAU-CHOC' défini comme produit, il sera affiché comme inconnu.",
+      "q4": "Puis-je modifier un scan après qu'il a été enregistré ?",
+      "a4": "Non, l'application est conçue comme un journal immuable pour l'intégrité des données. Pour corriger une erreur, vous devrez modifier manuellement le 'Journal d'Inventaire Scanné' dans la Google Sheet."
+    },
+    "bestPractices": {
+      "title": "Meilleures Pratiques",
+      "p1": "<strong>Numéros de Série Cohérents :</strong> Utilisez un format cohérent pour vos numéros de série, comme `ID-PRODUIT-NUMERO-UNIQUE` (par ex., `GATEAU-CHOC-101`). C'est essentiel pour que la page de résumé fonctionne correctement.",
+      "p2": "<strong>Sélectionnez le Bon Événement :</strong> La précision de vos tableaux de bord d��pend entièrement de la sélection du bon événement de scan. Vérifiez votre sélection avant de scanner un lot d'articles.",
+      "p3": "<strong>Bon Éclairage :</strong> Assurez-vous que les codes QR sont bien éclairés pour un scan rapide et fiable.",
+      "p4": "<strong>Actualiser les Données :</strong> Les tableaux de bord affichent un instantané des données. Utilisez le bouton 'Actualiser' sur chaque page pour récupérer les dernières informations de la Google Sheet."
+    }
+  }
+}

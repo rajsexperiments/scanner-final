@@ -1,0 +1,240 @@
+{
+  "login": {
+    "title": "Welcome Back",
+    "description": "Enter your credentials to access your account.",
+    "emailLabel": "Email",
+    "emailPlaceholder": "manager@example.com",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "••••••••",
+    "submitButton": "Sign In",
+    "submittingButton": "Signing In...",
+    "hintTitle": "Demo Hint:",
+    "hintText": "Use an email and password from the 'Users' tab in your Google Sheet.",
+    "error": "Invalid email or password.",
+    "successToast": "Welcome, {{name}}!",
+    "validation": {
+      "email": "Please enter a valid email address.",
+      "password": "Password is required."
+    }
+  },
+  "sidebar": {
+    "scanner": "Scanner",
+    "cakeStatus": "Cake Status",
+    "liveOps": "Live Operations",
+    "documentation": "Documentation",
+    "inventoryLog": "Inventory Log",
+    "summary": "Summary",
+    "settings": "Settings",
+    "logout": "Logout"
+  },
+  "scanner": {
+    "title": "StockLens QR Scanner",
+    "cameraOff": "Camera is off",
+    "status": {
+      "scanning": "Align QR code within the frame...",
+      "success": "Success! Scanned: {{lastScan}}",
+      "permissionDenied": "Camera access denied.",
+      "error": "An error occurred. Please try again.",
+      "idle": "Select an event, then press Start."
+    },
+    "scanEvent": "Scan Event",
+    "selectEvent": "Select an event...",
+    "b2bClient": "B2B Client",
+    "selectClient": "Select a client...",
+    "stop": "Stop",
+    "start": "Start Scanning",
+    "toast": {
+      "success": "Logged: {{serialNumber}}",
+      "error": "Failed to log scan: {{error}}",
+      "genericError": "An error occurred while logging the scan.",
+      "eventChange": "Scanner stopped to change event."
+    },
+    "events": {
+      "PRODUCTION_SCAN": "Production Scan",
+      "WAREHOUSE_ENTRY": "Warehouse Entry",
+      "WAREHOUSE_EXIT": "Warehouse Exit",
+      "BOUTIQUE_STOCK_SCAN": "Boutique Stock Scan",
+      "MARCHE_STOCK_SCAN": "Marche Stock Scan",
+      "SALEYA_STOCK_SCAN": "Saleya Stock Scan",
+      "SALE_B2C": "Sale (B2C)",
+      "DELIVERY_B2B": "Delivery (B2B)"
+    }
+  },
+  "inventoryLog": {
+    "title": "Inventory Log",
+    "description": "A detailed, chronological list of all scanned items.",
+    "cardTitle": "Scan History",
+    "cardDescription": "Total Scans: {{count}}",
+    "refresh": "Refresh",
+    "clearLog": "Clear Log",
+    "dialog": {
+      "title": "Are you absolutely sure?",
+      "description": "This action cannot be undone. This will permanently delete all inventory scan data and cake statuses from your Google Sheet.",
+      "cancel": "Cancel",
+      "confirm": "Yes, clear log"
+    },
+    "empty": {
+      "title": "No Scans Yet",
+      "description": "Start scanning items on the Scanner page to see them here."
+    },
+    "table": {
+      "productName": "Product Name",
+      "serialNumber": "Serial Number",
+      "scanEvent": "Scan Event",
+      "location": "Location",
+      "b2bClient": "B2B Client",
+      "timestamp": "Timestamp"
+    },
+    "unknownProduct": "Unknown Product"
+  },
+  "summary": {
+    "title": "Inventory Summary",
+    "description": "A high-level, aggregated overview of your current inventory.",
+    "kpi": {
+      "totalItems": "Total Items Scanned",
+      "uniqueProducts": "Unique Products"
+    },
+    "cardTitle": "Product Totals",
+    "refresh": "Refresh",
+    "empty": {
+      "title": "No Summary Data",
+      "description": "Scan some items to see an inventory summary here."
+    },
+    "itemsScanned": "items scanned"
+  },
+  "settings": {
+    "title": "Settings",
+    "description": "Manage your master product list.",
+    "accessDenied": {
+      "title": "Access Denied",
+      "description": "You do not have permission to view this page. Please contact an administrator."
+    },
+    "form": {
+      "addTitle": "Add New Product",
+      "editTitle": "Edit Product",
+      "description": "Define product details here. If a Product ID already exists, it will be updated.",
+      "editingDescription": "Editing product: {{name}}",
+      "labels": {
+        "id": "Product ID*",
+        "name": "Product Name*",
+        "category": "Category",
+        "unitOfMeasure": "Unit of Measure",
+        "unitCost": "Unit Cost",
+        "supplierName": "Supplier Name",
+        "reorderLevel": "Reorder Level",
+        "reorderQuantity": "Reorder Quantity",
+        "storageLocation": "Storage Location",
+        "shelfLifeDays": "Shelf Life (Days)",
+        "isPerishable": "Is Perishable?"
+      },
+      "save": "Save Product",
+      "cancel": "Cancel Edit"
+    },
+    "list": {
+      "title": "Master Product List",
+      "empty": {
+        "title": "No Products Defined",
+        "description": "Add products using the form above to get started."
+      },
+      "table": {
+        "id": "ID",
+        "name": "Name",
+        "category": "Category",
+        "supplier": "Supplier",
+        "actions": "Actions"
+      },
+      "dialog": {
+        "title": "Delete \"{{name}}\"?",
+        "description": "This action cannot be undone. This will permanently delete the product.",
+        "cancel": "Cancel",
+        "confirm": "Yes, delete"
+      }
+    }
+  },
+  "cakeStatus": {
+    "title": "Cake Status Dashboard",
+    "description": "A real-time view of each cake's lifecycle.",
+    "cardTitle": "Live Status",
+    "cardDescription": "Total Cakes Tracked: {{count}}",
+    "searchPlaceholder": "Search by serial number...",
+    "refresh": "Refresh",
+    "empty": {
+      "title": "No Cake Data",
+      "description": "Scan a cake to see its status here."
+    },
+    "table": {
+      "serialNumber": "Serial Number",
+      "status": "Status",
+      "location": "Current Location",
+      "lastUpdate": "Last Update"
+    }
+  },
+  "liveOps": {
+    "title": "Live Operations Dashboard",
+    "description": "A high-level, real-time overview of the entire operation.",
+    "refresh": "Refresh",
+    "productionTitle": "Production Summary",
+    "inventoryTitle": "Live Inventory",
+    "salesTitle": "Sales Summary",
+    "kpi": {
+      "producedToday": "Cakes Produced Today",
+      "totalProduced": "Total Cakes Produced",
+      "inWarehouse": "In Production Warehouse",
+      "inTransit": "In Transit to Outlets",
+      "atBoutique": "Stock at Boutique",
+      "atMarche": "Stock at Marche",
+      "atSaleya": "Stock at Saleya",
+      "soldB2C": "Cakes Sold Today (B2C)",
+      "deliveredB2B": "Cakes Delivered Today (B2B)",
+      "totalSold": "Total Cakes Sold/Delivered"
+    }
+  },
+  "documentation": {
+    "title": "User Documentation",
+    "description": "Your guide to using and maximizing the StockLens application.",
+    "guide": {
+      "title": "Usage Guide",
+      "description": "Step-by-step instructions for all features.",
+      "loginTitle": "1. Logging In",
+      "loginText": "Enter the email and password provided to you (as defined in the 'Users' sheet). Your role ('Warehouse Manager' or 'Scanner') will determine your access level.",
+      "scanTitle": "2. Scanning QR Codes",
+      "scanStep1": "Navigate to the <strong>Scanner</strong> page.",
+      "scanStep2": "Select the appropriate <strong>Scan Event</strong> from the dropdown. This is crucial for accurate tracking.",
+      "scanStep2_5": "Changing the <strong>Scan Event</strong> while the camera is active will automatically stop the scanner. You can then click <strong>Start Scanning</strong> again with the new event selected.",
+      "scanStep3": "If the event is 'Delivery (B2B)', a second dropdown will appear. Select the correct B2B client.",
+      "scanStep4": "Click <strong>Start Scanning</strong>. Your device's camera will activate.",
+      "scanStep5": "Align the QR code within the video frame. A beep, vibration, and green flash will confirm a successful scan.",
+      "scanStep5_5": "To manually stop the scanner at any time while it's active, click the red <strong>Stop</strong> button.",
+      "scanStep6": "The scanner will automatically be ready for the next scan after a 2-second cooldown.",
+      "viewTitle": "3. Viewing Dashboards & Logs",
+      "viewText": "Use the sidebar to navigate between different views:",
+      "viewStep1": "<strong>Cake Status:</strong> A real-time list of every individual cake, its current status, location, and last update time. You can search by serial number.",
+      "viewStep2": "<strong>Live Operations:</strong> A high-level dashboard summarizing production, inventory levels across locations, and sales data.",
+      "viewStep3": "<strong>Inventory Log:</strong> A detailed, chronological record of every single scan performed across the system.",
+      "viewStep4": "<strong>Summary:</strong> An aggregated count of each unique product based on all scans.",
+      "manageTitle": "4. Managing Products (Warehouse Managers Only)",
+      "manageStep1": "Navigate to the <strong>Settings</strong> page.",
+      "manageStep2": "Use the form at the top to add a new product or edit an existing one. To edit, click the pencil icon in the product list.",
+      "manageStep3": "The <strong>Product ID</strong> must be unique and is used to link serial numbers to product names (e.g., if Product ID is 'CAKE-CHOC', serial numbers should be 'CAKE-CHOC-001', 'CAKE-CHOC-002', etc.).",
+      "manageStep4": "Click the trash icon to delete a product."
+    },
+    "faq": {
+      "title": "Frequently Asked Questions (FAQ)",
+      "q1": "Why isn't the scanner starting?",
+      "a1": "First, ensure you have selected a 'Scan Event'. The 'Start Scanning' button will be disabled until you do. If you selected a B2B delivery, you must also select a client. If it still doesn't work, you may need to grant camera permissions to your browser for this site.",
+      "q2": "How is the 'Live Operations Dashboard' updated?",
+      "a2": "Most metrics are calculated by formulas directly in the Google Sheet. However, inventory location counts (e.g., 'In Production Warehouse', 'Stock at Boutique') are updated dynamically by the backend script. When you perform a 'PRODUCTION_SCAN', the warehouse count increases. When you perform an outlet stock scan (e.g., 'BOUTIQUE_STOCK_SCAN'), the warehouse count decreases, and the boutique's stock count increases.",
+      "q3": "Why does a product show as 'Unknown Product' in the log?",
+      "a3": "This happens when the Product ID part of the scanned serial number does not match any 'Product ID' in your 'Master Product List' (in Settings). For example, if you scan 'CAKE-VAN-001', but you only have 'CAKE-CHOC' defined as a product, it will show as unknown.",
+      "q4": "Can I edit a scan after it's been logged?",
+      "a4": "No, the application is designed as an immutable log for data integrity. To correct an error, you would need to manually edit the 'Scanned Inventory Log' in the Google Sheet."
+    },
+    "bestPractices": {
+      "title": "Best Practices",
+      "p1": "<strong>Consistent Serial Numbers:</strong> Use a consistent format for your serial numbers, like `PRODUCT-ID-UNIQUE-NUMBER` (e.g., `CAKE-CHOC-101`). This is essential for the summary page to work correctly.",
+      "p2": "<strong>Select the Correct Event:</strong> The accuracy of your dashboards depends entirely on selecting the correct scan event. Double-check your selection before scanning a batch of items.",
+      "p3": "<strong>Good Lighting:</strong> Ensure QR codes are well-lit for fast and reliable scanning.",
+      "p4": "<strong>Refresh Data:</strong> The dashboards show a snapshot of the data. Use the 'Refresh' button on each page to fetch the latest information from the Google Sheet."
+    }
+  }
+}

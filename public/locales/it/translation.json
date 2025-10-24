@@ -1,0 +1,240 @@
+{
+  "login": {
+    "title": "Bentornato",
+    "description": "Inserisci le tue credenziali per accedere al tuo account.",
+    "emailLabel": "Email",
+    "emailPlaceholder": "manager@example.com",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "��•••••••",
+    "submitButton": "Accedi",
+    "submittingButton": "Accesso in corso...",
+    "hintTitle": "Suggerimento demo:",
+    "hintText": "Usa un'email e una password dalla scheda 'Users' del tuo Google Sheet.",
+    "error": "Email o password non validi.",
+    "successToast": "Benvenuto, {{name}}!",
+    "validation": {
+      "email": "Inserisci un indirizzo email valido.",
+      "password": "La password è obbligatoria."
+    }
+  },
+  "sidebar": {
+    "scanner": "Scanner",
+    "cakeStatus": "Stato Torte",
+    "liveOps": "Operazioni in Tempo Reale",
+    "documentation": "Documentazione",
+    "inventoryLog": "Registro Inventario",
+    "summary": "Riepilogo",
+    "settings": "Impostazioni",
+    "logout": "Esci"
+  },
+  "scanner": {
+    "title": "Scanner QR StockLens",
+    "cameraOff": "Fotocamera spenta",
+    "status": {
+      "scanning": "Allinea il codice QR all'interno della cornice...",
+      "success": "Successo! Scansionato: {{lastScan}}",
+      "permissionDenied": "Accesso alla fotocamera negato.",
+      "error": "Si è verificato un errore. Riprova.",
+      "idle": "Seleziona un evento, poi premi Avvia."
+    },
+    "scanEvent": "Evento di Scansione",
+    "selectEvent": "Seleziona un evento...",
+    "b2bClient": "Cliente B2B",
+    "selectClient": "Seleziona un cliente...",
+    "stop": "Ferma",
+    "start": "Avvia Scansione",
+    "toast": {
+      "success": "Registrato: {{serialNumber}}",
+      "error": "Registrazione scansione fallita: {{error}}",
+      "genericError": "Si è verificato un errore durante la registrazione.",
+      "eventChange": "Scanner fermato per cambiare evento."
+    },
+    "events": {
+      "PRODUCTION_SCAN": "Scansione Produzione",
+      "WAREHOUSE_ENTRY": "Ingresso Magazzino",
+      "WAREHOUSE_EXIT": "Uscita Magazzino",
+      "BOUTIQUE_STOCK_SCAN": "Scansione Stock Boutique",
+      "MARCHE_STOCK_SCAN": "Scansione Stock Marche",
+      "SALEYA_STOCK_SCAN": "Scansione Stock Saleya",
+      "SALE_B2C": "Vendita (B2C)",
+      "DELIVERY_B2B": "Consegna (B2B)"
+    }
+  },
+  "inventoryLog": {
+    "title": "Registro Inventario",
+    "description": "Un elenco cronologico dettagliato di tutti gli articoli scansionati.",
+    "cardTitle": "Cronologia Scansioni",
+    "cardDescription": "Scansioni Totali: {{count}}",
+    "refresh": "Aggiorna",
+    "clearLog": "Svuota Registro",
+    "dialog": {
+      "title": "Sei assolutamente sicuro?",
+      "description": "Questa azione non può essere annullata. Eliminerà permanentemente tutti i dati di scansione dell'inventario e lo stato delle torte dal tuo Google Sheet.",
+      "cancel": "Annulla",
+      "confirm": "Sì, svuota registro"
+    },
+    "empty": {
+      "title": "Ancora Nessuna Scansione",
+      "description": "Inizia a scansionare articoli nella pagina Scanner per vederli qui."
+    },
+    "table": {
+      "productName": "Nome Prodotto",
+      "serialNumber": "Numero di Serie",
+      "scanEvent": "Evento di Scansione",
+      "location": "Posizione",
+      "b2bClient": "Cliente B2B",
+      "timestamp": "Data e Ora"
+    },
+    "unknownProduct": "Prodotto Sconosciuto"
+  },
+  "summary": {
+    "title": "Riepilogo Inventario",
+    "description": "Una panoramica aggregata e di alto livello del tuo inventario attuale.",
+    "kpi": {
+      "totalItems": "Articoli Totali Scansionati",
+      "uniqueProducts": "Prodotti Unici"
+    },
+    "cardTitle": "Totali per Prodotto",
+    "refresh": "Aggiorna",
+    "empty": {
+      "title": "Nessun Dato di Riepilogo",
+      "description": "Scansiona alcuni articoli per vedere un riepilogo dell'inventario qui."
+    },
+    "itemsScanned": "articoli scansionati"
+  },
+  "settings": {
+    "title": "Impostazioni",
+    "description": "Gestisci la tua lista prodotti principale.",
+    "accessDenied": {
+      "title": "Accesso Negato",
+      "description": "Non hai il permesso di visualizzare questa pagina. Contatta un amministratore."
+    },
+    "form": {
+      "addTitle": "Aggiungi Nuovo Prodotto",
+      "editTitle": "Modifica Prodotto",
+      "description": "Definisci i dettagli del prodotto qui. Se un ID Prodotto esiste già, verrà aggiornato.",
+      "editingDescription": "Modifica prodotto: {{name}}",
+      "labels": {
+        "id": "ID Prodotto*",
+        "name": "Nome Prodotto*",
+        "category": "Categoria",
+        "unitOfMeasure": "Unità di Misura",
+        "unitCost": "Costo Unitario",
+        "supplierName": "Nome Fornitore",
+        "reorderLevel": "Livello di Riordino",
+        "reorderQuantity": "Quantità di Riordino",
+        "storageLocation": "Posizione di Stoccaggio",
+        "shelfLifeDays": "Durata (Giorni)",
+        "isPerishable": "È Deperibile?"
+      },
+      "save": "Salva Prodotto",
+      "cancel": "Annulla Modifica"
+    },
+    "list": {
+      "title": "Lista Prodotti Principale",
+      "empty": {
+        "title": "Nessun Prodotto Definito",
+        "description": "Aggiungi prodotti usando il modulo qui sopra per iniziare."
+      },
+      "table": {
+        "id": "ID",
+        "name": "Nome",
+        "category": "Categoria",
+        "supplier": "Fornitore",
+        "actions": "Azioni"
+      },
+      "dialog": {
+        "title": "Eliminare \"{{name}}\"?",
+        "description": "Questa azione non può essere annullata. Eliminerà permanentemente il prodotto.",
+        "cancel": "Annulla",
+        "confirm": "Sì, elimina"
+      }
+    }
+  },
+  "cakeStatus": {
+    "title": "Dashboard Stato Torte",
+    "description": "Una vista in tempo reale del ciclo di vita di ogni torta.",
+    "cardTitle": "Stato in Tempo Reale",
+    "cardDescription": "Torte Totali Tracciate: {{count}}",
+    "searchPlaceholder": "Cerca per numero di serie...",
+    "refresh": "Aggiorna",
+    "empty": {
+      "title": "Nessun Dato sulle Torte",
+      "description": "Scansiona una torta per vedere il suo stato qui."
+    },
+    "table": {
+      "serialNumber": "Numero di Serie",
+      "status": "Stato",
+      "location": "Posizione Attuale",
+      "lastUpdate": "Ultimo Aggiornamento"
+    }
+  },
+  "liveOps": {
+    "title": "Dashboard Operazioni in Tempo Reale",
+    "description": "Una panoramica di alto livello e in tempo reale dell'intera operazione.",
+    "refresh": "Aggiorna",
+    "productionTitle": "Riepilogo Produzione",
+    "inventoryTitle": "Inventario in Tempo Reale",
+    "salesTitle": "Riepilogo Vendite",
+    "kpi": {
+      "producedToday": "Torte Prodotte Oggi",
+      "totalProduced": "Torte Totali Prodotte",
+      "inWarehouse": "In Magazzino di Produzione",
+      "inTransit": "In Transito verso i Negozi",
+      "atBoutique": "Stock in Boutique",
+      "atMarche": "Stock al Marche",
+      "atSaleya": "Stock a Saleya",
+      "soldB2C": "Torte Vendute Oggi (B2C)",
+      "deliveredB2B": "Torte Consegnate Oggi (B2B)",
+      "totalSold": "Torte Totali Vendute/Consegnate"
+    }
+  },
+  "documentation": {
+    "title": "Documentazione Utente",
+    "description": "La tua guida per usare e massimizzare l'applicazione StockLens.",
+    "guide": {
+      "title": "Guida all'Uso",
+      "description": "Istruzioni passo-passo per tutte le funzionalità.",
+      "loginTitle": "1. Accesso",
+      "loginText": "Inserisci l'email e la password che ti sono state fornite (definite nel foglio 'Users'). Il tuo ruolo ('Warehouse Manager' o 'Scanner') determinerà il tuo livello di accesso.",
+      "scanTitle": "2. Scansione dei Codici QR",
+      "scanStep1": "Vai alla pagina <strong>Scanner</strong>.",
+      "scanStep2": "Seleziona l'<strong>Evento di Scansione</strong> appropriato dal menu a discesa. Questo è cruciale per un tracciamento accurato.",
+      "scanStep2_5": "La modifica dell'<strong>Evento di Scansione</strong> mentre la fotocamera è attiva fermerà automaticamente lo scanner. È quindi possibile fare nuovamente clic su <strong>Avvia Scansione</strong> con il nuovo evento selezionato.",
+      "scanStep3": "Se l'evento è 'Consegna (B2B)', apparirà un secondo menu a discesa. Seleziona il cliente B2B corretto.",
+      "scanStep4": "Clicca su <strong>Avvia Scansione</strong>. La fotocamera del tuo dispositivo si attiverà.",
+      "scanStep5": "Allinea il codice QR all'interno della cornice del video. Un segnale acustico, una vibrazione e un lampo verde confermeranno una scansione riuscita.",
+      "scanStep5_5": "Per fermare manualmente lo scanner in qualsiasi momento mentre è attivo, fare clic sul pulsante rosso <strong>Ferma</strong>.",
+      "scanStep6": "Lo scanner sarà automaticamente pronto per la scansione successiva dopo un cooldown di 2 secondi.",
+      "viewTitle": "3. Visualizzazione di Dashboard e Registri",
+      "viewText": "Usa la barra laterale per navigare tra le diverse viste:",
+      "viewStep1": "<strong>Stato Torte:</strong> Un elenco in tempo reale di ogni singola torta, il suo stato attuale, la posizione e l'ora dell'ultimo aggiornamento. Puoi cercare per numero di serie.",
+      "viewStep2": "<strong>Operazioni in Tempo Reale:</strong> Una dashboard di alto livello che riassume la produzione, i livelli di inventario tra le varie sedi e i dati di vendita.",
+      "viewStep3": "<strong>Registro Inventario:</strong> Un registro cronologico dettagliato di ogni singola scansione eseguita nel sistema.",
+      "viewStep4": "<strong>Riepilogo:</strong> Un conteggio aggregato di ogni prodotto unico basato su tutte le scansioni.",
+      "manageTitle": "4. Gestione Prodotti (Solo per i Responsabili di Magazzino)",
+      "manageStep1": "Vai alla pagina <strong>Impostazioni</strong>.",
+      "manageStep2": "Usa il modulo in alto per aggiungere un nuovo prodotto o modificarne uno esistente. Per modificare, clicca sull'icona della matita nell'elenco dei prodotti.",
+      "manageStep3": "L'<strong>ID Prodotto</strong> deve essere unico e viene utilizzato per collegare i numeri di serie ai nomi dei prodotti (ad es., se l'ID Prodotto è 'TORTA-CIOCC', i numeri di serie dovrebbero essere 'TORTA-CIOCC-001', 'TORTA-CIOCC-002', ecc.).",
+      "manageStep4": "Clicca sull'icona del cestino per eliminare un prodotto."
+    },
+    "faq": {
+      "title": "Domande Frequenti (FAQ)",
+      "q1": "Perché lo scanner non si avvia?",
+      "a1": "Per prima cosa, assicurati di aver selezionato un 'Evento di Scansione'. Il pulsante 'Avvia Scansione' sarà disabilitato finché non lo farai. Se hai selezionato una consegna B2B, devi anche selezionare un cliente. Se ancora non funziona, potresti dover concedere i permessi per la fotocamera al tuo browser per questo sito.",
+      "q2": "Come viene aggiornata la 'Dashboard Operazioni in Tempo Reale'?",
+      "a2": "La maggior parte delle metriche viene calcolata tramite formule direttamente nel Google Sheet. Tuttavia, i conteggi dell'inventario per posizione (ad es., 'In Magazzino di Produzione', 'Stock in Boutique') vengono aggiornati dinamicamente dallo script di backend. Quando esegui una 'SCANSIONE_PRODUZIONE', il conteggio del magazzino aumenta. Quando esegui una scansione dello stock di un negozio (ad es., 'SCANSIONE_STOCK_BOUTIQUE'), il conteggio del magazzino diminuisce e quello del negozio aumenta.",
+      "q3": "Perché un prodotto viene mostrato come 'Prodotto Sconosciuto' nel registro?",
+      "a3": "Questo accade quando la parte dell'ID Prodotto del numero di serie scansionato non corrisponde a nessun 'ID Prodotto' nella tua 'Lista Prodotti Principale' (in Impostazioni). Ad esempio, se scansioni 'TORTA-VAN-001', ma hai definito solo 'TORTA-CIOCC' come prodotto, verrà mostrato come sconosciuto.",
+      "q4": "Posso modificare una scansione dopo che è stata registrata?",
+      "a4": "No, l'applicazione è progettata come un registro immutabile per l'integrità dei dati. Per correggere un errore, dovrai modificare manualmente il 'Registro Inventario Scansionato' nel Google Sheet."
+    },
+    "bestPractices": {
+      "title": "Migliori Pratiche",
+      "p1": "<strong>Numeri di Serie Coerenti:</strong> Usa un formato coerente per i tuoi numeri di serie, come `ID-PRODOTTO-NUMERO-UNICO` (ad es., `TORTA-CIOCC-101`). Questo è essenziale per il corretto funzionamento della pagina di riepilogo.",
+      "p2": "<strong>Seleziona l'Evento Corretto:</strong> L'accuratezza delle tue dashboard dipende interamente dalla selezione dell'evento di scansione corretto. Controlla due volte la tua selezione prima di scansionare un lotto di articoli.",
+      "p3": "<strong>Buona Illuminazione:</strong> Assicurati che i codici QR siano ben illuminati per una scansione rapida e affidabile.",
+      "p4": "<strong>Aggiorna i Dati:</strong> Le dashboard mostrano un'istantanea dei dati. Usa il pulsante 'Aggiorna' su ogni pagina per recuperare le informazioni più recenti dal Google Sheet."
+    }
+  }
+}
