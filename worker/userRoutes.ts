@@ -6,9 +6,9 @@ export function userRoutes(app: Hono<{ Bindings: Env }>) {
     // Scan routes
     app.post('/api/scans', async (c) => {
         const client = new GoogleSheetClient(c.env.GOOGLE_SCRIPT_API_KEY || '');
-        const body = await c.req.json<{ serialNumber: string, scanEvent: ScanEvent, location: string, b2bClientId?: string }>();
+        const body = await c.req.json<{ serialNumber: string, scanEvent: ScanEvent, location: string, clientId?: string }>();
         if (!body.serialNumber || !body.scanEvent || !body.location) return c.json({ success: false, error: 'Serial number, scan event, and location are required' }, 400);
-        const result = await client.addScan(body.serialNumber, body.scanEvent, body.location, body.b2bClientId);
+        const result = await client.addScan(body.serialNumber, body.scanEvent, body.location, body.clientId);
         return c.json(result);
     });
     app.get('/api/logs', async (c) => {
