@@ -13,7 +13,7 @@ import { useAuthStore } from '@/hooks/use-auth';
 import { useTranslation } from 'react-i18next';
 export function InventoryLogPage() {
   const { t } = useTranslation();
-  const { logs, products, b2bClients, loadingLogs, loadingProducts, loadingB2BClients, fetchLogs, fetchProducts, fetchB2BClients, clearLogs } = useInventoryStore();
+  const { logs, products, clients, loadingLogs, loadingProducts, loadingB2BClients, fetchLogs, fetchProducts, fetchB2BClients, clearLogs } = useInventoryStore();
   const currentUser = useAuthStore((state) => state.currentUser);
   useEffect(() => {
     fetchLogs();
@@ -21,7 +21,7 @@ export function InventoryLogPage() {
     fetchB2BClients();
   }, [fetchLogs, fetchProducts, fetchB2BClients]);
   const productMap = useMemo(() => new Map(products.map(p => [p.id, p.name])), [products]);
-  const clientMap = useMemo(() => new Map(b2bClients.map(c => [c.clientId, c.clientName])), [b2bClients]);
+  const clientMap = useMemo(() => new Map(clients.map(c => [c.clientId, c.clientName])), [clients]);
   const getProductName = (serialNumber: string) => {
     const serialStr = String(serialNumber);
     const parts = serialStr.split('-');
@@ -34,7 +34,7 @@ export function InventoryLogPage() {
     fetchB2BClients();
   };
   const renderContent = () => {
-    const isLoading = loadingLogs || (loadingProducts && products.length === 0) || (loadingB2BClients && b2bClients.length === 0);
+    const isLoading = loadingLogs || (loadingProducts && products.length === 0) || (loadingB2BClients && clients.length === 0);
     if (isLoading && logs.length === 0) {
       return <div className="space-y-2">{[...Array(5)].map((_, i) => <Skeleton key={i} className="h-12 w-full" />)}</div>;
     }
@@ -56,7 +56,7 @@ export function InventoryLogPage() {
               <TableHead>{t('inventoryLog.table.serialNumber')}</TableHead>
               <TableHead>{t('inventoryLog.table.scanEvent')}</TableHead>
               <TableHead>{t('inventoryLog.table.location')}</TableHead>
-              <TableHead>{t('inventoryLog.table.b2bClient')}</TableHead>
+              <TableHead>{t('inventoryLog.table.client')}</TableHead>
               <TableHead className="text-right">{t('inventoryLog.table.timestamp')}</TableHead>
             </TableRow>
           </TableHeader>
@@ -67,7 +67,7 @@ export function InventoryLogPage() {
                 <TableCell className="font-mono">{log.serialNumber}</TableCell>
                 <TableCell>{log.scanEvent.replace(/_/g, ' ')}</TableCell>
                 <TableCell>{log.location}</TableCell>
-                <TableCell>{log.b2bClientId ? clientMap.get(log.b2bClientId) || log.b2bClientId : 'N/A'}</TableCell>
+                <TableCell>{log.clientId ? clientMap.get(log.clientId) || log.clientId : 'N/A'}</TableCell>
                 <TableCell className="text-right text-muted-foreground">
                   {format(new Date(log.timestamp), "MMM d, yyyy 'at' h:mm:ss a")}
                 </TableCell>
