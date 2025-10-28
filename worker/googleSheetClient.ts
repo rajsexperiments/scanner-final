@@ -1,6 +1,6 @@
 import type { ApiResponse, ScanLog, InventorySummaryItem, Product, User, ScanEvent, CakeStatus, LiveOperationsData, B2BClient } from '@shared/types';
 // This is the production URL for the Google Apps Script backend.
-const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzf-8RSXOxpU_0wZ6VimUFT-xBLn-l8i0hpIWyxhX9xMWFbuykCqZ5arkyvD5eRuIVmbw/exec';
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzPS5aPW0x2fXmu2j1zcsSeo4eVi7fzERl63y0VX9qXEcWgKYZ9QGHf07jO2cBp-Uyf1Q/exec';
 export class GoogleSheetClient {
   private apiKey: string;
   constructor(apiKey: string) {
