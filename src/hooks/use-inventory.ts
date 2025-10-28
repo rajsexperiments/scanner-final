@@ -116,12 +116,12 @@ export const useInventoryStore = create<InventoryState>((set, get) => ({
       set({ loadingB2BClients: false });
     }
   },
-  addScan: async (serialNumber: string, scanEvent: ScanEvent, location: string, b2bClientId?: string) => {
+  addScan: async (serialNumber: string, scanEvent: ScanEvent, location: string, clientId?: string) => {
     try {
       const res = await fetch('/api/scans', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ serialNumber, scanEvent, location, b2bClientId }),
+        body: JSON.stringify({ serialNumber, scanEvent, location, clientId }),
       });
       const result = await res.json();
       if (result.success) {
