@@ -20,7 +20,7 @@ interface InventoryState {
   fetchCakeStatus: () => Promise<void>;
   fetchLiveOperationsData: () => Promise<void>;
   fetchB2BClients: () => Promise<void>;
-  addScan: (serialNumber: string, scanEvent: ScanEvent, location: string, b2bClientId?: string) => Promise<void>;
+  addScan: (serialNumber: string, scanEvent: ScanEvent, location: string, clientId?: string) => Promise<void>;
   clearLogs: () => Promise<void>;
   addProduct: (product: Product) => Promise<void>;
   deleteProduct: (productId: string) => Promise<void>;
