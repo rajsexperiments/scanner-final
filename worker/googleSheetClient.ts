@@ -49,7 +49,7 @@ export class GoogleSheetClient {
       return { success: false, error: errorMessage };
     }
   }
-  addScan = (serialNumber: string, scanEvent: ScanEvent, location: string, b2bClientId?: string) => this.fetchFromGoogleScript<ScanLog>('POST', 'addScan', { serialNumber, scanEvent, location, b2bClientId });
+  addScan = (serialNumber: string, scanEvent: ScanEvent, location: string, clientId?: string) => this.fetchFromGoogleScript<ScanLog>('POST', 'addScan', { serialNumber, scanEvent, location, clientId });
   getLogs = () => this.fetchFromGoogleScript<ScanLog[]>('GET', 'getLogs');
   clearLogs = () => this.fetchFromGoogleScript<{ message: string }>('POST', 'clearLogs');
   getSummary = () => this.fetchFromGoogleScript<InventorySummaryItem[]>('GET', 'getSummary');
