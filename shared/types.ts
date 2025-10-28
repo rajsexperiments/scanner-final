@@ -17,7 +17,7 @@ export interface ScanLog {
   timestamp: string;
   scanEvent: ScanEvent;
   location: string;
-  b2bClientId?: string;
+  clientId?: string;
 }
 export interface InventorySummaryItem {
   productId: string;
