@@ -1,179 +1,244 @@
-import { useEffect, useRef, useState } from 'react';
-import { Html5Qrcode, Html5QrcodeScannerState } from 'html5-qrcode';
-import { AppLayout } from '@/components/layout/AppLayout';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Camera, CameraOff, Zap } from 'lucide-react';
-import { Toaster, toast } from 'sonner';
-import { useInventoryStore } from '@/hooks/use-inventory';
-import { useAuthStore } from '@/hooks/use-auth';
-import { cn, playBeep } from '@/lib/utils';
-import type { ScanEvent } from '@shared/types';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useTranslation } from 'react-i18next';
-const QR_READER_ID = 'qr-reader';
+import React, { useEffect, useState, useRef } from 'react';
+import { Html5QrcodeScanner, Html5QrcodeSupportedFormats } from 'html5-qrcode';
+import { useInventoryStore } from '../store/inventoryStore';
+import { logScanToGoogleSheets } from '../api/googleSheetClient';
+import { AlertCircle, CheckCircle, Loader } from 'lucide-react';
+
 export function HomePage() {
-  const { t } = useTranslation();
-  const SCAN_EVENTS: { value: ScanEvent; label: string }[] = [
-    { value: 'PRODUCTION_SCAN', label: t('scanner.events.PRODUCTION_SCAN') },
-    { value: 'BOUTIQUE_STOCK_SCAN', label: t('scanner.events.BOUTIQUE_STOCK_SCAN') },
-    { value: 'MARCHE_STOCK_SCAN', label: t('scanner.events.MARCHE_STOCK_SCAN') },
-    { value: 'SALEYA_STOCK_SCAN', label: t('scanner.events.SALEYA_STOCK_SCAN') },
-    { value: 'DELIVERY_B2B', label: t('scanner.events.DELIVERY_B2B') },
-  ];
-  const [scanStatus, setScanStatus] = useState<'idle' | 'scanning' | 'success' | 'error' | 'permission_denied'>('idle');
-  const [lastScan, setLastScan] = useState<string | null>(null);
-  const [showSuccessOverlay, setShowSuccessOverlay] = useState(false);
-  const [selectedEvent, setSelectedEvent] = useState<ScanEvent | null>(null);
-  const [selectedB2BClient, setSelectedB2BClient] = useState<string | null>(null);
-  const html5QrCodeRef = useRef<Html5Qrcode | null>(null);
-  const addScan = useInventoryStore((state) => state.addScan);
-  const b2bClients = useInventoryStore((state) => state.b2bClients);
-  const fetchB2BClients = useInventoryStore((state) => state.fetchB2BClients);
-  const currentUser = useAuthStore((state) => state.currentUser);
-  const cooldownRef = useRef(false);
+  const [scannerState, setScannerState] = useState<'idle' | 'ready' | 'scanning' | 'error'>('idle');
+  const [lastScannedValue, setLastScannedValue] = useState<string | null>(null);
+  const [scanError, setScanError] = useState<string | null>(null);
+  const [isLogging, setIsLogging] = useState(false);
+  const scannerRef = useRef<Html5QrcodeScanner | null>(null);
+  const userLocation = useInventoryStore((state) => state.userLocation);
+  const scanEvent = useInventoryStore((state) => state.scanEvent);
+
   useEffect(() => {
-    fetchB2BClients();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-  const onScanSuccess = (decodedText: string) => {
-    if (cooldownRef.current || !currentUser?.location || !selectedEvent) return;
-    if (selectedEvent === 'DELIVERY_B2B' && !selectedB2BClient) return;
-    cooldownRef.current = true;
-    setScanStatus('success');
-    setLastScan(decodedText);
-    playBeep();
-    if (navigator.vibrate) navigator.vibrate(200);
-    addScan(decodedText, selectedEvent, currentUser.location, selectedB2BClient || undefined);
-    setShowSuccessOverlay(true);
-    setTimeout(() => setShowSuccessOverlay(false), 500);
-    setTimeout(() => {
-      cooldownRef.current = false;
-      if (html5QrCodeRef.current?.isScanning) {
-        setScanStatus('scanning');
-      }
-    }, 2000);
-  };
-  const stopScanner = async () => {
-    if (html5QrCodeRef.current && html5QrCodeRef.current.isScanning) {
-      try {
-        await html5QrCodeRef.current.stop();
-      } catch (err) {
-        console.error('Failed to stop scanner:', err);
-      }
-    }
-    setScanStatus('idle');
-  };
-  const startScanner = async () => {
-    if (!html5QrCodeRef.current) {
-      html5QrCodeRef.current = new Html5Qrcode(QR_READER_ID, { verbose: false });
-    }
-    const qrCode = html5QrCodeRef.current;
-    if (qrCode.getState() === Html5QrcodeScannerState.SCANNING) return;
-    setScanStatus('scanning');
-    setLastScan(null);
-    try {
-      await qrCode.start(
-        { facingMode: 'environment' },
-        { fps: 10, qrbox: { width: 250, height: 250 } },
-        onScanSuccess,
-        (errorMessage) => { /* ignore */ }
-      );
-    } catch (err) {
-      console.error('Camera permission error:', err);
-      setScanStatus('permission_denied');
-      toast.error(t('scanner.status.permissionDenied'));
-    }
-  };
-  useEffect(() => {
+    initializeScanner();
     return () => {
-      stopScanner();
+      cleanupScanner();
     };
   }, []);
-  const handleEventChange = (value: string) => {
-    const newEvent = value as ScanEvent;
-    setSelectedEvent(newEvent);
-    setSelectedB2BClient(null);
-    if (scanStatus === 'scanning') {
-      stopScanner();
-      toast.info(t('scanner.toast.eventChange'));
+
+  const initializeScanner = async () => {
+    try {
+      setScannerState('idle');
+      setScanError(null);
+
+      // Check camera availability first
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      const hasCamera = devices.some(device => device.kind === 'videoinput');
+      
+      if (!hasCamera) {
+        setScanError('No camera device found on this device');
+        setScannerState('error');
+        return;
+      }
+
+      console.log('[SCANNER_INIT] Camera device found, initializing scanner');
+
+      const scanner = new Html5QrcodeScanner(
+        'qr-reader', // HTML element ID
+        {
+          fps: 10,
+          qrbox: { width: 250, height: 250 }, // Use object format
+          aspectRatio: 1.0,
+          disableFlip: false,
+          useBarCodeDetectorIfSupported: false, // CRITICAL: Disable BarcodeDetector
+          rememberLastUsedCamera: true,
+          formatsToSupport: [Html5QrcodeSupportedFormats.QR_CODE],
+          showTorchButtonIfSupported: true,
+          videoConstraints: {
+            facingMode: 'environment', // Back camera on mobile
+            width: { ideal: 1280 },
+            height: { ideal: 720 }
+          }
+        },
+        /* verbose= */ true // Enable logging
+      );
+
+      scannerRef.current = scanner;
+
+      // Success callback
+      const onScanSuccess = (decodedText: string, decodedResult: any) => {
+        console.log(`[SCAN_SUCCESS] QR Code detected: ${decodedText}`);
+        console.log(`[TIMESTAMP] ${new Date().toISOString()}`);
+        console.log(`[FULL_RESULT]`, decodedResult);
+
+        setLastScannedValue(decodedText);
+        setScannerState('scanning');
+
+        // Temporarily show success, then reset
+        setTimeout(() => {
+          handleScanResult(decodedText);
+        }, 500);
+      };
+
+      // Error callback - don't log every frame
+      const onScanFailure = (error: any) => {
+        // Silently fail on normal "not found" errors
+        if (typeof error === 'string' && error.includes('NotFoundException')) {
+          return;
+        }
+        console.warn(`[SCAN_ERROR] ${error}`);
+      };
+
+      // Render the scanner
+      scanner.render(onScanSuccess, onScanFailure);
+      setScannerState('ready');
+
+      console.log('[SCANNER_INIT] Scanner initialized successfully');
+
+      // Monitor scanner state after 2 seconds
+      setTimeout(() => {
+        try {
+          const state = scanner.getState?.();
+          console.log(`[SCANNER_STATE_CHECK] Current state: ${state}`);
+        } catch (e) {
+          console.log('[SCANNER_STATE_CHECK] State check not supported');
+        }
+      }, 2000);
+
+    } catch (error: any) {
+      console.error('[SCANNER_INIT_ERROR]', error);
+      setScanError(error.message || 'Failed to initialize scanner');
+      setScannerState('error');
     }
   };
-  const getStatusMessage = () => {
-    switch (scanStatus) {
-      case 'scanning': return t('scanner.status.scanning');
-      case 'success': return t('scanner.status.success', { lastScan });
-      case 'permission_denied': return t('scanner.status.permissionDenied');
-      case 'error': return t('scanner.status.error');
-      default: return t('scanner.status.idle');
+
+  const handleScanResult = async (qrValue: string) => {
+    setIsLogging(true);
+    try {
+      // Log to Google Sheets
+      await logScanToGoogleSheets({
+        serialNumber: qrValue,
+        scanEvent: scanEvent,
+        location: userLocation,
+        timestamp: new Date().toISOString(),
+        clientId: '' // Optional: add B2B client if needed
+      });
+
+      console.log('[SCAN_LOG_SUCCESS] Scan logged to Google Sheets');
+      setScanError(null);
+
+      // Show success feedback
+      alert(`✓ Scanned: ${qrValue}`);
+      setLastScannedValue(null);
+
+    } catch (error: any) {
+      console.error('[SCAN_LOG_ERROR]', error);
+      setScanError(`Failed to log scan: ${error.message}`);
+    } finally {
+      setIsLogging(false);
     }
   };
-  const isStartDisabled = !selectedEvent || (selectedEvent === 'DELIVERY_B2B' && !selectedB2BClient);
+
+  const cleanupScanner = () => {
+    if (scannerRef.current) {
+      try {
+        scannerRef.current.clear().catch(error => {
+          console.error('[SCANNER_CLEANUP_ERROR]', error);
+        });
+      } catch (error) {
+        console.error('[SCANNER_CLEANUP_FATAL]', error);
+      }
+      scannerRef.current = null;
+    }
+  };
+
   return (
-    <AppLayout>
-      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-900 p-4">
-        <Card className="w-full max-w-md shadow-lg animate-fade-in">
-          <CardHeader>
-            <CardTitle className="text-center text-2xl font-bold text-foreground">
-              {t('scanner.title')}
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div className={cn("relative aspect-square w-full rounded-lg overflow-hidden bg-secondary border-dashed border-2 border-border flex items-center justify-center transition-all duration-300", { "border-green-500 shadow-lg shadow-green-500/20": showSuccessOverlay })}>
-              <div id={QR_READER_ID} className="w-full h-full" />
-              {scanStatus !== 'scanning' && (
-                <div className="absolute inset-0 flex flex-col items-center justify-center bg-secondary/80 backdrop-blur-sm">
-                  <Camera className="w-16 h-16 text-muted-foreground" />
-                  <p className="mt-2 text-muted-foreground">{t('scanner.cameraOff')}</p>
-                </div>
-              )}
-              {showSuccessOverlay && (
-                <div className="absolute inset-0 bg-green-500/20 pointer-events-none" />
-              )}
-            </div>
-            <div className="space-y-4">
-              <div>
-                <label className="text-sm font-medium text-muted-foreground">{t('scanner.scanEvent')}</label>
-                <Select onValueChange={handleEventChange} value={selectedEvent || ''}>
-                  <SelectTrigger><SelectValue placeholder={t('scanner.selectEvent')} /></SelectTrigger>
-                  <SelectContent>
-                    {SCAN_EVENTS.map(event => (<SelectItem key={event.value} value={event.value}>{event.label}</SelectItem>))}
-                  </SelectContent>
-                </Select>
-              </div>
-              {selectedEvent === 'DELIVERY_B2B' && (
-                <div className="animate-fade-in">
-                  <label className="text-sm font-medium text-muted-foreground">{t('scanner.b2bClient')}</label>
-                  <Select onValueChange={(value) => setSelectedB2BClient(value)} value={selectedB2BClient || ''}>
-                    <SelectTrigger><SelectValue placeholder={t('scanner.selectClient')} /></SelectTrigger>
-                    <SelectContent>
-                      {b2bClients.map(client => (<SelectItem key={client.clientId} value={client.clientId}>{client.clientName}</SelectItem>))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              )}
-            </div>
-            <div className="text-center p-3 rounded-lg bg-muted text-muted-foreground font-medium transition-colors duration-300">
-              {getStatusMessage()}
-            </div>
-            <div className="flex gap-4">
-              {scanStatus === 'scanning' ? (
-                <Button onClick={stopScanner} variant="destructive" className="w-full">
-                  <CameraOff className="mr-2 h-4 w-4" /> {t('scanner.stop')}
-                </Button>
-              ) : (
-                <Button onClick={startScanner} className="w-full" disabled={isStartDisabled}>
-                  <Zap className="mr-2 h-4 w-4" /> {t('scanner.start')}
-                </Button>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-        <footer className="absolute bottom-4 text-center text-muted-foreground/80 text-sm">
-          <p>Built with ❤️ at Cloudflare</p>
-        </footer>
+    <div className="w-full max-w-2xl mx-auto p-6 space-y-6">
+      {/* Header */}
+      <div className="text-center space-y-2">
+        <h1 className="text-3xl font-bold text-gray-900">QR Scanner</h1>
+        <p className="text-gray-600">
+          Scanning as: <span className="font-semibold">{scanEvent}</span> at <span className="font-semibold">{userLocation}</span>
+        </p>
       </div>
-      <Toaster richColors closeButton />
-    </AppLayout>
+
+      {/* Status Badge */}
+      <div className="flex justify-center">
+        {scannerState === 'idle' && (
+          <div className="px-4 py-2 bg-yellow-100 text-yellow-800 rounded-full flex items-center gap-2">
+            <Loader size={16} className="animate-spin" />
+            Initializing...
+          </div>
+        )}
+        {scannerState === 'ready' && (
+          <div className="px-4 py-2 bg-green-100 text-green-800 rounded-full flex items-center gap-2">
+            <CheckCircle size={16} />
+            Camera Ready
+          </div>
+        )}
+        {scannerState === 'scanning' && (
+          <div className="px-4 py-2 bg-blue-100 text-blue-800 rounded-full flex items-center gap-2">
+            <Loader size={16} className="animate-spin" />
+            Processing scan...
+          </div>
+        )}
+        {scannerState === 'error' && (
+          <div className="px-4 py-2 bg-red-100 text-red-800 rounded-full flex items-center gap-2">
+            <AlertCircle size={16} />
+            Error
+          </div>
+        )}
+      </div>
+
+      {/* Scanner Container */}
+      <div className="bg-gray-900 rounded-lg overflow-hidden shadow-lg">
+        <div
+          id="qr-reader"
+          className="w-full"
+          style={{
+            minHeight: '400px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: '#111827'
+          }}
+        />
+      </div>
+
+      {/* Error Display */}
+      {scanError && (
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4 space-y-2">
+          <p className="font-semibold text-red-900">⚠️ Error</p>
+          <p className="text-red-700 text-sm">{scanError}</p>
+          <button
+            onClick={initializeScanner}
+            className="mt-2 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
+          >
+            Retry
+          </button>
+        </div>
+      )}
+
+      {/* Last Scan Result */}
+      {lastScannedValue && (
+        <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+          <p className="text-sm text-gray-600">Last Scan:</p>
+          <p className="text-lg font-mono font-bold text-green-900">{lastScannedValue}</p>
+          {isLogging && (
+            <p className="text-xs text-gray-600 mt-2 flex items-center gap-2">
+              <Loader size={14} className="animate-spin" />
+              Logging to database...
+            </p>
+          )}
+        </div>
+      )}
+
+      {/* Debug Info */}
+      <details className="bg-gray-100 rounded-lg p-4 text-xs text-gray-700">
+        <summary className="cursor-pointer font-semibold mb-2">🔧 Debug Info</summary>
+        <pre className="bg-white p-2 rounded border border-gray-300 overflow-x-auto">
+{`Scanner State: ${scannerState}
+Camera Ready: ${scannerState === 'ready' || scannerState === 'scanning'}
+Last Scan: ${lastScannedValue || 'None'}
+Scan Event: ${scanEvent}
+Location: ${userLocation}
+Time: ${new Date().toLocaleString()}`}
+        </pre>
+      </details>
+    </div>
   );
 }
