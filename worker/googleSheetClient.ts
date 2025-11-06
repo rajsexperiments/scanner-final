@@ -1,63 +1,68 @@
-import type { ApiResponse, ScanLog, InventorySummaryItem, Product, User, ScanEvent, CakeStatus, LiveOperationsData, B2BClient } from '@shared/types';
-// This is the production URL for the Google Apps Script backend.
-const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzPS5aPW0x2fXmu2j1zcsSeo4eVi7fzERl63y0VX9qXEcWgKYZ9QGHf07jO2cBp-Uyf1Q/exec';
-export class GoogleSheetClient {
-  private apiKey: string;
-  constructor(apiKey: string) {
-    this.apiKey = apiKey;
-  }
-  private async fetchFromGoogleScript<T>(
-    method: 'GET' | 'POST',
-    action: string,
-    payload?: object
-  ): Promise<ApiResponse<T>> {
-    try {
-      let response: Response;
-      const headers: HeadersInit = {
+const GOOGLE_SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE'; // Replace with your actual URL
+
+interface ScanLogData {
+  serialNumber: string;
+  scanEvent: string;
+  location: string;
+  timestamp: string;
+  clientId?: string;
+}
+
+export async function logScanToGoogleSheets(data: ScanLogData): Promise<any> {
+  try {
+    console.log('[GOOGLE_SHEETS_API] Sending scan data:', data);
+
+    const response = await fetch(GOOGLE_SCRIPT_URL, {
+      method: 'POST',
+      mode: 'cors',
+      headers: {
         'Content-Type': 'application/json',
-      };
-      // Only add Authorization header if an API key is provided
-      if (this.apiKey) {
-        headers['Authorization'] = `Bearer ${this.apiKey}`;
-      }
-      if (method === 'GET') {
-        const url = new URL(GOOGLE_SCRIPT_URL);
-        url.searchParams.append('action', action);
-        response = await fetch(url.toString(), {
-          method: 'GET',
-          headers,
-        });
-      } else { // POST
-        response = await fetch(GOOGLE_SCRIPT_URL, {
-          method: 'POST',
-          headers,
-          body: JSON.stringify({ action, payload }),
-        });
-      }
-      const contentType = response.headers.get('content-type');
-      if (response.ok && contentType && contentType.includes('application/json')) {
-        return await response.json() as ApiResponse<T>;
-      } else {
-        const text = await response.text();
-        const errorMessage = `Received non-JSON response from server: ${text}`;
-        console.error(`Error calling Google Script action "${action}":`, errorMessage);
-        return { success: false, error: errorMessage };
-      }
-    } catch (error) {
-      console.error(`Error calling Google Script action "${action}":`, error);
-      const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred while contacting the backend.';
-      return { success: false, error: errorMessage };
+      },
+      body: JSON.stringify({
+        action: 'logScan',
+        ...data
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
+
+    const result = await response.json();
+    console.log('[GOOGLE_SHEETS_API] Response:', result);
+    return result;
+
+  } catch (error: any) {
+    console.error('[GOOGLE_SHEETS_API_ERROR]', error);
+    throw new Error(`Failed to log scan: ${error.message}`);
   }
-  addScan = (serialNumber: string, scanEvent: ScanEvent, location: string, clientId?: string) => this.fetchFromGoogleScript<ScanLog>('POST', 'addScan', { serialNumber, scanEvent, location, clientId });
-  getLogs = () => this.fetchFromGoogleScript<ScanLog[]>('GET', 'getLogs');
-  clearLogs = () => this.fetchFromGoogleScript<{ message: string }>('POST', 'clearLogs');
-  getSummary = () => this.fetchFromGoogleScript<InventorySummaryItem[]>('GET', 'getSummary');
-  getProducts = () => this.fetchFromGoogleScript<Product[]>('GET', 'getProducts');
-  addProduct = (product: Product) => this.fetchFromGoogleScript<Product[]>('POST', 'addProduct', product);
-  deleteProduct = (productId: string) => this.fetchFromGoogleScript<Product[]>('POST', 'deleteProduct', { productId });
-  getUsers = () => this.fetchFromGoogleScript<User[]>('GET', 'getUsers');
-  getCakeStatus = () => this.fetchFromGoogleScript<CakeStatus[]>('GET', 'getCakeStatus');
-  getLiveOperationsData = () => this.fetchFromGoogleScript<LiveOperationsData>('GET', 'getLiveOperationsData');
-  getB2BClients = () => this.fetchFromGoogleScript<B2BClient[]>('GET', 'getB2BClients');
+}
+
+export async function getInventoryData(): Promise<any> {
+  try {
+    console.log('[GOOGLE_SHEETS_API] Fetching inventory data');
+
+    const response = await fetch(GOOGLE_SCRIPT_URL, {
+      method: 'POST',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        action: 'getInventory'
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+
+    const result = await response.json();
+    console.log('[GOOGLE_SHEETS_API] Inventory data:', result);
+    return result;
+
+  } catch (error: any) {
+    console.error('[GOOGLE_SHEETS_API_ERROR]', error);
+    throw new Error(`Failed to fetch inventory: ${error.message}`);
+  }
 }
