@@ -11,34 +11,83 @@ import { format } from 'date-fns';
 import { Toaster } from '@/components/ui/sonner';
 import { useAuthStore } from '@/hooks/use-auth';
 import { useTranslation } from 'react-i18next';
+
 export function InventoryLogPage() {
   const { t } = useTranslation();
-  const { logs, products, clients, loadingLogs, loadingProducts, loadingB2BClients, fetchLogs, fetchProducts, fetchB2BClients, clearLogs } = useInventoryStore();
+  const { 
+    logs, 
+    products, 
+    clients, 
+    loadingLogs, 
+    loadingProducts, 
+    loadingB2BClients, 
+    fetchLogs, 
+    fetchProducts, 
+    fetchB2BClients, 
+    clearLogs 
+  } = useInventoryStore();
   const currentUser = useAuthStore((state) => state.currentUser);
+
   useEffect(() => {
-    fetchLogs();
-    fetchProducts();
-    fetchB2BClients();
+    const loadData = async () => {
+      try {
+        await Promise.all([
+          fetchLogs(),
+          fetchProducts(),
+          fetchB2BClients()
+        ]);
+      } catch (error) {
+        console.error('Error loading inventory data:', error);
+      }
+    };
+    
+    loadData();
   }, [fetchLogs, fetchProducts, fetchB2BClients]);
-  const productMap = useMemo(() => new Map(products.map(p => [p.id, p.name])), [products]);
-  const clientMap = useMemo(() => new Map(clients.map(c => [c.clientId, c.clientName])), [clients]);
+
+  const productMap = useMemo(() => {
+    return new Map(products.map(p => [p.id, p.name]));
+  }, [products]);
+
+  const clientMap = useMemo(() => {
+    return new Map(clients.map(c => [c.clientId, c.clientName]));
+  }, [clients]);
+
   const getProductName = (serialNumber: string) => {
+    if (!serialNumber) return t('inventoryLog.unknownProduct');
+    
     const serialStr = String(serialNumber);
     const parts = serialStr.split('-');
     const productId = parts.length > 1 ? parts.slice(0, -1).join('-') : serialStr;
+    
     return productMap.get(productId) || t('inventoryLog.unknownProduct');
   };
-  const handleRefresh = () => {
-    fetchLogs();
-    fetchProducts();
-    fetchB2BClients();
+
+  const handleRefresh = async () => {
+    try {
+      await Promise.all([
+        fetchLogs(),
+        fetchProducts(),
+        fetchB2BClients()
+      ]);
+    } catch (error) {
+      console.error('Error refreshing data:', error);
+    }
   };
+
   const renderContent = () => {
     const isLoading = loadingLogs || (loadingProducts && products.length === 0) || (loadingB2BClients && clients.length === 0);
+
     if (isLoading && logs.length === 0) {
-      return <div className="space-y-2">{[...Array(5)].map((_, i) => <Skeleton key={i} className="h-12 w-full" />)}</div>;
+      return (
+        <div className="space-y-2">
+          {[...Array(5)].map((_, i) => (
+            <Skeleton key={i} className="h-12 w-full" />
+          ))}
+        </div>
+      );
     }
-    if (logs.length === 0) {
+
+    if (!logs || logs.length === 0) {
       return (
         <div className="text-center py-16">
           <Inbox className="mx-auto h-12 w-12 text-muted-foreground" />
@@ -47,6 +96,7 @@ export function InventoryLogPage() {
         </div>
       );
     }
+
     return (
       <div className="border rounded-md">
         <Table>
@@ -61,23 +111,33 @@ export function InventoryLogPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {logs.map((log, index) => (
-              <TableRow key={`${log.timestamp}-${index}`}>
-                <TableCell>{getProductName(log.serialNumber)}</TableCell>
-                <TableCell className="font-mono">{log.serialNumber}</TableCell>
-                <TableCell>{log.scanEvent.replace(/_/g, ' ')}</TableCell>
-                <TableCell>{log.location}</TableCell>
-                <TableCell>{log.clientId ? clientMap.get(log.clientId) || log.clientId : 'N/A'}</TableCell>
-                <TableCell className="text-right text-muted-foreground">
-                  {format(new Date(log.timestamp), "MMM d, yyyy 'at' h:mm:ss a")}
-                </TableCell>
-              </TableRow>
-            ))}
+            {logs.map((log, index) => {
+              if (!log) return null;
+              
+              return (
+                <TableRow key={`${log.timestamp || Date.now()}-${index}`}>
+                  <TableCell>{getProductName(log.serialNumber)}</TableCell>
+                  <TableCell className="font-mono">{log.serialNumber || 'N/A'}</TableCell>
+                  <TableCell>{log.scanEvent ? log.scanEvent.replace(/_/g, ' ') : 'N/A'}</TableCell>
+                  <TableCell>{log.location || 'N/A'}</TableCell>
+                  <TableCell>
+                    {log.clientId ? clientMap.get(log.clientId) || log.clientId : 'N/A'}
+                  </TableCell>
+                  <TableCell className="text-right text-muted-foreground">
+                    {log.timestamp 
+                      ? format(new Date(log.timestamp), "MMM d, yyyy 'at' h:mm:ss a")
+                      : 'N/A'
+                    }
+                  </TableCell>
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
       </div>
     );
   };
+
   return (
     <AppLayout>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-10 lg:py-12">
@@ -86,32 +146,51 @@ export function InventoryLogPage() {
             <h1 className="text-4xl font-bold tracking-tight">{t('inventoryLog.title')}</h1>
             <p className="text-lg text-muted-foreground">{t('inventoryLog.description')}</p>
           </header>
+
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <div>
-                <CardTitle className="flex items-center gap-2"><List className="h-5 w-5" /><span>{t('inventoryLog.cardTitle')}</span></CardTitle>
-                <CardDescription>{t('inventoryLog.cardDescription', { count: logs.length })}</CardDescription>
+                <CardTitle className="flex items-center gap-2">
+                  <List className="h-5 w-5" />
+                  <span>{t('inventoryLog.cardTitle')}</span>
+                </CardTitle>
+                <CardDescription>
+                  {t('inventoryLog.cardDescription', { count: logs?.length || 0 })}
+                </CardDescription>
               </div>
               <div className="flex items-center gap-2">
-                <Button variant="outline" size="sm" onClick={handleRefresh} disabled={loadingLogs}>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={handleRefresh} 
+                  disabled={loadingLogs}
+                >
                   <RefreshCw className={`mr-2 h-4 w-4 ${loadingLogs ? 'animate-spin' : ''}`} />
                   {t('inventoryLog.refresh')}
                 </Button>
                 {currentUser?.role === 'Warehouse Manager' && (
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
-                      <Button variant="destructive" disabled={logs.length === 0 || loadingLogs}>
-                        <Trash2 className="mr-2 h-4 w-4" /> {t('inventoryLog.clearLog')}
+                      <Button 
+                        variant="destructive" 
+                        disabled={!logs || logs.length === 0 || loadingLogs}
+                      >
+                        <Trash2 className="mr-2 h-4 w-4" /> 
+                        {t('inventoryLog.clearLog')}
                       </Button>
                     </AlertDialogTrigger>
                     <AlertDialogContent>
                       <AlertDialogHeader>
                         <AlertDialogTitle>{t('inventoryLog.dialog.title')}</AlertDialogTitle>
-                        <AlertDialogDescription>{t('inventoryLog.dialog.description')}</AlertDialogDescription>
+                        <AlertDialogDescription>
+                          {t('inventoryLog.dialog.description')}
+                        </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
                         <AlertDialogCancel>{t('inventoryLog.dialog.cancel')}</AlertDialogCancel>
-                        <AlertDialogAction onClick={() => clearLogs()}>{t('inventoryLog.dialog.confirm')}</AlertDialogAction>
+                        <AlertDialogAction onClick={() => clearLogs()}>
+                          {t('inventoryLog.dialog.confirm')}
+                        </AlertDialogAction>
                       </AlertDialogFooter>
                     </AlertDialogContent>
                   </AlertDialog>
