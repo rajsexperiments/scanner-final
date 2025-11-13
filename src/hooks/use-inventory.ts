@@ -1,6 +1,8 @@
 import { create } from 'zustand';
 import { toast } from 'sonner';
 import type { ScanLog, InventorySummaryItem, Product, ScanEvent, CakeStatus, LiveOperationsData, B2BClient } from '@shared/types';
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzPS5aPW0x2fXmu2j1zcsSeo4eVi7fzERl63y0VX9qXEcWgKYZ9QGHf07jO2cBp-Uyf1Q/exec';
+
 interface InventoryState {
   logs: ScanLog[];
   summary: InventorySummaryItem[];
@@ -38,15 +40,34 @@ export const useInventoryStore = create<InventoryState>((set, get) => ({
   loadingCakeStatus: false,
   loadingLiveOperations: false,
   loadingB2BClients: false,
+  
   fetchLogs: async () => {
     set({ loadingLogs: true });
     try {
-      const res = await fetch('/api/logs');
+      // Use GET request with query parameter
+      const res = await fetch(`${GOOGLE_SCRIPT_URL}?action=getLogs`, {
+        method: 'GET',
+        mode: 'cors',
+      });
+
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+      }
+
       const result = await res.json();
-      if (result.success) set({ logs: result.data });
-      else toast.error(`Failed to fetch logs: ${result.error}`);
-    } catch (e) {
-      toast.error('An error occurred while fetching logs.');
+      console.log('[FETCH_LOGS] Response:', result);
+
+      // Handle { success: true, data: [...] } format from Google Apps Script
+      if (result.success && result.data) {
+        set({ logs: result.data });
+      } else if (result.error) {
+        toast.error(`Failed to fetch logs: ${result.error}`);
+      } else {
+        toast.error('Failed to fetch logs: Unknown error');
+      }
+    } catch (e: any) {
+      console.error('[FETCH_LOGS_ERROR]', e);
+      toast.error(`Error fetching logs: ${e.message || 'Unknown error'}`);
     } finally {
       set({ loadingLogs: false });
     }
