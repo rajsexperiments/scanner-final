@@ -1,4 +1,4 @@
-const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzPS5aPW0x2fXmu2j1zcsSeo4eVi7fzERl63y0VX9qXEcWgKYZ9QGHf07jO2cBp-Uyf1Q/exec';
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzPS5aPW0x2fXmu2j1zcsSeo4eVi7fzERl63y0VX9qXEcWgKYZ9QGHf07jO2cBp-Uyf1Q/exec'; // Replace with your actual URL
 
 interface ScanLogData {
   serialNumber: string;
@@ -7,38 +7,6 @@ interface ScanLogData {
   timestamp: string;
   clientId?: string;
 }
-
-// ====== ADD THIS NEW FUNCTION ======
-export async function getInventoryLogs(): Promise<any> {
-  try {
-    console.log('[GOOGLE_SHEETS_API] Fetching inventory logs');
-
-    // Use GET request with query parameter
-    const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getLogs`, {
-      method: 'GET',
-      mode: 'cors',
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-    }
-
-    const result = await response.json();
-    console.log('[GOOGLE_SHEETS_API] Logs data:', result);
-    
-    // Extract data from { success: true, data: [...] } format
-    if (result.success && result.data) {
-      return result.data;
-    } else {
-      throw new Error(result.error || 'Failed to fetch logs');
-    }
-
-  } catch (error: any) {
-    console.error('[GOOGLE_SHEETS_API_ERROR]', error);
-    throw new Error(`Failed to fetch logs: ${error.message}`);
-  }
-}
-// ====== END OF NEW FUNCTION ======
 
 export async function logScanToGoogleSheets(data: ScanLogData): Promise<any> {
   try {
