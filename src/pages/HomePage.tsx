@@ -1,17 +1,20 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Html5QrcodeScanner, Html5QrcodeSupportedFormats } from 'html5-qrcode';
-import { useInventoryStore } from '../store/inventoryStore';
-import { logScanToGoogleSheets } from '../api/googleSheetClient';
+import { useInventoryStore } from '@/hooks/use-inventory';
+import { useAuthStore } from '@/hooks/use-auth';
 import { AlertCircle, CheckCircle, Loader } from 'lucide-react';
+import { toast } from 'sonner';
 
 export function HomePage() {
   const [scannerState, setScannerState] = useState<'idle' | 'ready' | 'scanning' | 'error'>('idle');
   const [lastScannedValue, setLastScannedValue] = useState<string | null>(null);
   const [scanError, setScanError] = useState<string | null>(null);
   const [isLogging, setIsLogging] = useState(false);
+  const [scanEvent, setScanEvent] = useState<string>('PRODUCTION_SCAN');
   const scannerRef = useRef<Html5QrcodeScanner | null>(null);
-  const userLocation = useInventoryStore((state) => state.userLocation);
-  const scanEvent = useInventoryStore((state) => state.scanEvent);
+  const { addScan } = useInventoryStore();
+  const { currentUser } = useAuthStore();
+  const userLocation = currentUser?.location || 'Unknown';
 
   useEffect(() => {
     initializeScanner();
@@ -28,33 +31,36 @@ export function HomePage() {
       // Check camera availability first
       const devices = await navigator.mediaDevices.enumerateDevices();
       const hasCamera = devices.some(device => device.kind === 'videoinput');
-      
+
       if (!hasCamera) {
         setScanError('No camera device found on this device');
         setScannerState('error');
+        toast.error('No camera found', {
+          description: 'Please ensure your device has a camera and permissions are granted.'
+        });
         return;
       }
 
       console.log('[SCANNER_INIT] Camera device found, initializing scanner');
 
       const scanner = new Html5QrcodeScanner(
-        'qr-reader', // HTML element ID
+        'qr-reader',
         {
           fps: 10,
-          qrbox: { width: 250, height: 250 }, // Use object format
+          qrbox: { width: 250, height: 250 },
           aspectRatio: 1.0,
           disableFlip: false,
-          useBarCodeDetectorIfSupported: false, // CRITICAL: Disable BarcodeDetector
+          useBarCodeDetectorIfSupported: false,
           rememberLastUsedCamera: true,
           formatsToSupport: [Html5QrcodeSupportedFormats.QR_CODE],
           showTorchButtonIfSupported: true,
           videoConstraints: {
-            facingMode: 'environment', // Back camera on mobile
+            facingMode: 'environment',
             width: { ideal: 1280 },
             height: { ideal: 720 }
           }
         },
-        /* verbose= */ true // Enable logging
+        /* verbose= */ false
       );
 
       scannerRef.current = scanner;
@@ -63,71 +69,67 @@ export function HomePage() {
       const onScanSuccess = (decodedText: string, decodedResult: any) => {
         console.log(`[SCAN_SUCCESS] QR Code detected: ${decodedText}`);
         console.log(`[TIMESTAMP] ${new Date().toISOString()}`);
-        console.log(`[FULL_RESULT]`, decodedResult);
 
         setLastScannedValue(decodedText);
         setScannerState('scanning');
 
-        // Temporarily show success, then reset
-        setTimeout(() => {
-          handleScanResult(decodedText);
-        }, 500);
+        handleScanResult(decodedText);
       };
 
-      // Error callback - don't log every frame
+      // Error callback - silently fail on normal "not found" errors
       const onScanFailure = (error: any) => {
-        // Silently fail on normal "not found" errors
         if (typeof error === 'string' && error.includes('NotFoundException')) {
           return;
         }
-        console.warn(`[SCAN_ERROR] ${error}`);
       };
 
-      // Render the scanner
       scanner.render(onScanSuccess, onScanFailure);
       setScannerState('ready');
+      toast.success('Scanner ready', {
+        description: 'Point your camera at a QR code to scan'
+      });
 
       console.log('[SCANNER_INIT] Scanner initialized successfully');
-
-      // Monitor scanner state after 2 seconds
-      setTimeout(() => {
-        try {
-          const state = scanner.getState?.();
-          console.log(`[SCANNER_STATE_CHECK] Current state: ${state}`);
-        } catch (e) {
-          console.log('[SCANNER_STATE_CHECK] State check not supported');
-        }
-      }, 4000);
 
     } catch (error: any) {
       console.error('[SCANNER_INIT_ERROR]', error);
       setScanError(error.message || 'Failed to initialize scanner');
       setScannerState('error');
+      toast.error('Scanner initialization failed', {
+        description: error.message || 'Please check camera permissions'
+      });
     }
   };
 
   const handleScanResult = async (qrValue: string) => {
     setIsLogging(true);
     try {
-      // Log to Google Sheets
-      await logScanToGoogleSheets({
-        serialNumber: qrValue,
-        scanEvent: scanEvent,
-        location: userLocation,
-        timestamp: new Date().toISOString(),
-        clientId: '' // Optional: add B2B client if needed
-      });
+      await addScan(qrValue, scanEvent as any, userLocation);
 
-      console.log('[SCAN_LOG_SUCCESS] Scan logged to Google Sheets');
+      console.log('[SCAN_LOG_SUCCESS] Scan logged successfully');
       setScanError(null);
 
-      // Show success feedback
-      alert(`✓ Scanned: ${qrValue}`);
-      setLastScannedValue(null);
+      // Show success toast
+      toast.success('Scan logged successfully!', {
+        description: `${qrValue} - ${scanEvent}`,
+        duration: 3000
+      });
+
+      // Reset after a delay
+      setTimeout(() => {
+        setLastScannedValue(null);
+        setScannerState('ready');
+      }, 1500);
 
     } catch (error: any) {
       console.error('[SCAN_LOG_ERROR]', error);
-      setScanError(`Failed to log scan: ${error.message}`);
+      const errorMessage = error.message || 'Failed to log scan';
+      setScanError(errorMessage);
+      toast.error('Failed to log scan', {
+        description: errorMessage,
+        duration: 5000
+      });
+      setScannerState('ready');
     } finally {
       setIsLogging(false);
     }
@@ -231,7 +233,7 @@ export function HomePage() {
       <details className="bg-gray-100 rounded-lg p-4 text-xs text-gray-700">
         <summary className="cursor-pointer font-semibold mb-2">🔧 Debug Info</summary>
         <pre className="bg-white p-2 rounded border border-gray-300 overflow-x-auto">
-{`Scanner State: ${scannerState}
+          {`Scanner State: ${scannerState}
 Camera Ready: ${scannerState === 'ready' || scannerState === 'scanning'}
 Last Scan: ${lastScannedValue || 'None'}
 Scan Event: ${scanEvent}

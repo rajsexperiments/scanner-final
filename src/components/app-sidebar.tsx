@@ -1,5 +1,5 @@
 import React from "react";
-import { QrCode, List, BarChart3, Settings, LogOut, User, Cake, Activity, BookText } from "lucide-react";
+import { QrCode, List, BarChart3, Settings, LogOut, User, BookText } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -40,16 +40,7 @@ export function AppSidebar(): JSX.Element {
               <NavLink to="/" className={navLinkClasses}><QrCode /> <span>{t('sidebar.scanner')}</span></NavLink>
             </SidebarMenuButton>
           </SidebarMenuItem>
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild>
-              <NavLink to="/cake-status" className={navLinkClasses}><Cake /> <span>{t('sidebar.cakeStatus')}</span></NavLink>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild>
-              <NavLink to="/live-operations" className={navLinkClasses}><Activity /> <span>{t('sidebar.liveOps')}</span></NavLink>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
+
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
               <NavLink to="/documentation" className={navLinkClasses}><BookText /> <span>{t('sidebar.documentation')}</span></NavLink>

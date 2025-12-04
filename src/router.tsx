@@ -6,9 +6,8 @@ import { InventoryLogPage } from '@/pages/InventoryLogPage';
 import { SummaryPage } from '@/pages/SummaryPage';
 import { SettingsPage } from '@/pages/SettingsPage';
 import { LoginPage } from '@/pages/LoginPage';
-import { CakeStatusPage } from '@/pages/CakeStatusPage';
-import { LiveOperationsPage } from '@/pages/LiveOperationsPage';
 import { DocumentationPage } from '@/pages/DocumentationPage';
+
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -30,14 +29,6 @@ export const router = createBrowserRouter([
       {
         path: "settings",
         element: <SettingsPage />,
-      },
-      {
-        path: "cake-status",
-        element: <CakeStatusPage />,
-      },
-      {
-        path: "live-operations",
-        element: <LiveOperationsPage />,
       },
       {
         path: "documentation",
