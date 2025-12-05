@@ -97,7 +97,7 @@ export function HomePage() {
         } catch (e) {
           console.log('[SCANNER_STATE_CHECK] State check not supported');
         }
-      }, 4000);
+      }, 7000);
 
     } catch (error: any) {
       console.error('[SCANNER_INIT_ERROR]', error);
