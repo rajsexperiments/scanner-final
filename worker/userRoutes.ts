@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { Env } from './core-utils';
 import type { Product, ScanEvent } from '@shared/types';
-import { GoogleSheetClient } from './googleSheetClient';
+import { GoogleSheetClient } from './GoogleSheetClient';
 export function userRoutes(app: Hono<{ Bindings: Env }>) {
     // Scan routes
     app.post('/api/scans', async (c) => {
