@@ -71,7 +71,7 @@ export function HomePage() {
         // Temporarily show success, then reset
         setTimeout(() => {
           handleScanResult(decodedText);
-        }, 500);
+        }, 800);
       };
 
       // Error callback - don't log every frame
